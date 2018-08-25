@@ -12,11 +12,21 @@ class CategoriesVC: UIViewController {
 
     @IBOutlet weak var categoryTable: UITableView!
     let categories: [Category] = DataService.instance.getCategories()
+    var categoryTitle = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         categoryTable.delegate = self
         categoryTable.dataSource = self
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let controller = segue.destination as? ProductVC {
+            let barBtn = UIBarButtonItem()
+            barBtn.title = ""
+            navigationItem.backBarButtonItem = barBtn
+            controller.categoryTitle = categoryTitle
+        }
     }
 
 }
@@ -38,6 +48,11 @@ extension CategoriesVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CGFloat(160)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        categoryTitle = categories[indexPath.row].title
+        performSegue(withIdentifier: "ProductSegue", sender: self)
     }
 
 
